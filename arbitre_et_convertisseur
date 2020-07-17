@@ -1,0 +1,69 @@
+Première version encore, je vais l'améliorer pour que ça
+affiche pourquoi le coup est illégal, c'est inclus dans
+le module chess, je m'en occupe plus tard.
+
+
+
+#########################################CONVERTISSEUR##########################################################
+Texte -> board (module chess) -> nouveau board (via algos) -> Texte.
+
+#Ce programme lit le fichier texte, en sort un board (module chess)(tous les
+#coups sont enregistres dans le module chess c'est pratique)
+# Les algos vont ensuite utiliser ces boards et ressortir un 
+#nouveau board (ça c'est la partie perso, chacun à son algo).
+# Ce programme récupère le board, et en ressort un nouveau fichier texte pour la compet.
+#Remarquons que le convertisseur, chacun le fait comme il veut, là c'est ce que moi j'utilise.
+#Cependant, l'ordi qui veut utiliser le programme arbitre pour checker le fichier texte devra 
+#utiliser le module chess + Python, navré.
+
+#Ici, le fichier texte s'appelle Plato.txt mais ça peut se changer.
+
+####Rappel: format texte : 'e4e5,e5e6,' ne pas oublier la virgule à la fin.
+import chess
+
+
+#Partie 1, on extrait le dernier board à partir du fichier texte.
+def recup():
+    Plato = open('Plato.txt','r')
+    historique = Plato.read()
+    board = chess.Board() 
+    nombre_de_coups = int(len(historique)/5)
+    for i in range(nombre_de_coups):
+        move = ''
+        for j in range(4):
+            move+=historique[5*i+j]
+        move = chess.Move.from_uci(move)
+        board.push(move)
+        i+=5 #on prend en compte le ','
+    Plato.close()
+    return(board)
+
+#Partie 2, on a notre nouveau board, on veut ecrire le coup joué dans le fichier texte.
+def purec(board):
+    
+    move = board.pop()
+    move = str(chess.Move.uci(move))+','
+    
+    Plato = open('Plato.txt','r')
+    historique = Plato.read()
+    Plato.close()
+
+    historique+=move
+    
+    Plato = open('Plato.txt','w')
+    Plato.write(historique)
+    Plato.close()
+#########################################ARBITRE##########################################################
+    def arbitre():
+    #on commence par récupérer le plateau avant le dernier coup
+    board = recup()
+    lm = board.pop() #last move. D'une pierre deux coups, on enlève le coup à 
+    #board et on le stocke dans lm.
+    
+    
+    # C'est assez pratique, le module chess check toutes les règles des x3 et 
+    #répétitions etc...
+    if lm in board2.legal_moves:
+        return(True)
+    else:
+        return(False)
